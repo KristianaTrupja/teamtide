@@ -1,6 +1,8 @@
+"use client";
+
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Trash2 } from "lucide-react";
 
 import { cn } from "./utils";
 import { Button } from "./button";
@@ -16,7 +18,14 @@ type CardProps = {
   image?: string | StaticImageData;
   variant?: CardVariant;
   className?: string;
+  showDelete?: boolean;
+  onDelete?: () => void | Promise<void>;
+  deleteBusy?: boolean;
 };
+
+function isRemoteImageUrl(src: string): boolean {
+  return /^https?:\/\//i.test(src);
+}
 
 const variantClasses: Record<CardVariant, string> = {
   dark: "bg-slate-950 text-white",
@@ -32,6 +41,9 @@ export function Card({
   image,
   variant = "dark",
   className,
+  showDelete,
+  onDelete,
+  deleteBusy,
 }: CardProps) {
   return (
     <article
@@ -41,9 +53,38 @@ export function Card({
         className,
       )}
     >
-      {image && (
-        <Image src={image} alt="" fill className="object-cover transition duration-500 group-hover:scale-105" />
-      )}
+      {showDelete ? (
+        <button
+          type="button"
+          aria-label="Delete idea"
+          disabled={deleteBusy}
+          className="absolute right-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-black/55 text-white/90 backdrop-blur-sm transition hover:border-red-400/60 hover:bg-red-950/80 hover:text-red-100 disabled:opacity-50"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            void onDelete?.();
+          }}
+        >
+          <Trash2 size={18} strokeWidth={2} aria-hidden />
+        </button>
+      ) : null}
+      {image ? (
+        typeof image === "string" && isRemoteImageUrl(image) ? (
+          <img
+            src={image}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <Image
+            src={image}
+            alt=""
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+            className="object-cover transition duration-500 group-hover:scale-105"
+          />
+        )
+      ) : null}
 
       {/* Full overlay on hover */}
       <div className="absolute inset-0 bg-black/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

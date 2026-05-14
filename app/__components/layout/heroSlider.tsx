@@ -70,8 +70,8 @@ export default function HeroSlider({
               className="object-cover"
             />
 
-            <div className="absolute inset-0 bg-black/30" />
-            <div className="absolute inset-0 bg-linear-to-b from-black/35 via-black/35 to-black/80" />
+            <div className="absolute inset-0 bg-black/20" />
+            <div className="absolute inset-0 bg-linear-to-b from-black/25 via-black/30 to-black/60" />
           </div>
         );
       })}

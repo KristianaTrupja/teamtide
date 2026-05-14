@@ -1,4 +1,4 @@
-import Header from "./__components/layout/header";
+import { ConditionalHeader } from "./__components/layout/conditionalHeader";
 import type { Metadata } from "next";
 import { Caveat, Manrope } from "next/font/google";
 import "./globals.css";
@@ -27,7 +27,7 @@ export default function RootLayout({
     <html lang="en" className={`${manrope.variable} ${caveat.variable} h-full antialiased`}>
       <body className="min-h-full bg-white text-slate-900">
           <div className="min-h-screen">
-            <Header />
+            <ConditionalHeader />
             <main className="mx-auto w-full pt-0">
               {children}
             </main>

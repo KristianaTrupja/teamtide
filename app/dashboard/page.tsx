@@ -2,9 +2,9 @@ import HeroSlider from "../__components/layout/heroSlider";
 import { DashboardNav } from "../__components/layout/dashboardNav";
 import { RecentIdeasSection } from "../__components/sections/recentIdeasSection";
 
-import HeroImage from "@/assets/heroImage.png";
-import teamImage from "@/assets/teamImage.png";
-import meetings from "@/assets/meetings.png";
+import HeroImage from "@/assets/HeroBg.png";
+import heroBg from "@/assets/heroBackground.png";
+import discussion from "@/assets/discussion.png";
 
 const heroSlides = [
   {
@@ -17,13 +17,13 @@ const heroSlides = [
     eyebrow: "Bring ideas to life",
     title: "Create moments",
     description: "Collaborate, organize, and share experiences.",
-    image: teamImage,
+    image: heroBg,
   },
   {
     eyebrow: "Make work fun again",
     title: "Discover team ideas",
     description: "Engage your team with interactive event boards.",
-    image: meetings,
+    image: discussion,
   },
 ];
 
@@ -31,7 +31,7 @@ export default function DashboardPage() {
   return (
     <>
       <HeroSlider slides={heroSlides}>
-      <DashboardNav />
+        <DashboardNav />
       </HeroSlider>
       <RecentIdeasSection />
     </>

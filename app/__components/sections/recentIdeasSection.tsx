@@ -3,41 +3,10 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 import { Button } from "../ui/button";
-import { Card } from "../ui/card";
+import bgImage from "@/assets/HeroBg.png";
+import { getRecentIdeas } from "@/src/infrastructure/api/ideas/server";
 
-import bgImage from "@/assets/teamImage.png";
-import fallbackImage from "@/assets/cardImage.png";
-
-export type IdeaResponseDto = {
-  id: string;
-  title: string;
-  shortDescription: string;
-  coverImageUrl?: string | null;
-  status: string;
-  createdAt: string;
-  createdBy: {
-    id: string;
-    username: string;
-    fullName?: string | null;
-  };
-  tags: {
-    id: string;
-    name: string;
-    color?: string | null;
-  }[];
-};
-
-export async function getRecentIdeas(): Promise<IdeaResponseDto[]> {
-  const res = await fetch("http://localhost:3001/api/ideas", {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch ideas");
-  }
-
-  return res.json();
-}
+import { RecentIdeasClient } from "./recentIdeasClient";
 
 export async function RecentIdeasSection() {
   const recentIdeas = await getRecentIdeas();
@@ -49,6 +18,7 @@ export async function RecentIdeasSection() {
         alt=""
         fill
         priority
+        sizes="100vw"
         className="absolute inset-0 z-0 object-cover"
       />
 
@@ -70,20 +40,7 @@ export async function RecentIdeasSection() {
           </Link>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-3">
-          {recentIdeas.slice(0, 3).map((idea) => (
-            <Card
-              key={idea.id}
-              title={idea.title}
-              description={idea.shortDescription}
-              image={idea.coverImageUrl || fallbackImage}
-              createdAt={new Date(idea.createdAt).toLocaleDateString()}
-              author={idea.createdBy.fullName || idea.createdBy.username}
-              href={`/dashboard/ideas/${idea.id}`}
-              variant="dark"
-            />
-          ))}
-        </div>
+        <RecentIdeasClient initialIdeas={recentIdeas} />
       </div>
     </section>
   );

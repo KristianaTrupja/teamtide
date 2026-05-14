@@ -1,7 +1,7 @@
 import { forwardRef, type InputHTMLAttributes, type ReactNode } from "react";
 import { cn } from "./utils";
 
-export type InputVariant = "default" | "glass";
+export type InputVariant = "default" | "glass" | "authDark";
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
@@ -14,15 +14,19 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 };
 
 const baseClasses =
-  "h-10 rounded-full border text-sm outline-none transition " +
+  "rounded-full border text-sm outline-none transition " +
   "disabled:cursor-not-allowed disabled:opacity-50";
 
 const variantClasses: Record<InputVariant, string> = {
   default:
-    "border-slate-300 bg-white px-4 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+    "h-10 border-slate-300 bg-white px-4 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
 
   glass:
-    "border-white/30 bg-white/14 px-4 text-white placeholder:text-white/62 focus:border-[var(--tf-accent)]/75 focus:bg-white/22",
+    "h-10 border-white/30 bg-white/14 px-4 text-white placeholder:text-white/62 focus:border-[var(--tf-accent)]/75 focus:bg-white/22",
+
+  authDark:
+    "h-12 border-white/25 bg-white/5 px-5 text-base text-white placeholder:text-white/40 " +
+    "focus:border-orange-500 focus:ring-2 focus:ring-orange-500/25",
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
@@ -40,10 +44,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   },
   ref,
 ) {
+  const labelClassName =
+    variant === "authDark"
+      ? "text-xs font-semibold uppercase tracking-wider text-white/55"
+      : "text-xs font-medium text-slate-600";
+
   return (
     <div className={cn("flex flex-col gap-1.5", fullWidth && "w-full")}>
       {label && (
-        <label htmlFor={id} className="text-xs font-medium text-slate-600">
+        <label htmlFor={id} className={labelClassName}>
           {label}
         </label>
       )}
@@ -78,9 +87,23 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       </div>
 
       {error ? (
-        <span className="text-xs text-red-500">{error}</span>
+        <span
+          className={cn(
+            "text-xs",
+            variant === "authDark" ? "text-red-400" : "text-red-500",
+          )}
+        >
+          {error}
+        </span>
       ) : hint ? (
-        <span className="text-xs text-slate-500">{hint}</span>
+        <span
+          className={cn(
+            "text-xs",
+            variant === "authDark" ? "text-white/45" : "text-slate-500",
+          )}
+        >
+          {hint}
+        </span>
       ) : null}
     </div>
   );
