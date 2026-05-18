@@ -22,4 +22,26 @@ export type IdeaResponseDto = {
     name: string;
     color?: string | null;
   }[];
+  board?: {
+    id: string;
+    stickers: {
+      id: string;
+      type: string;
+      content: string;
+      x: number;
+      y: number;
+      width?: number | null;
+      height?: number | null;
+      color?: string | null;
+      isPinned: boolean;
+    }[];
+  } | null;
+};
+
+export type SaveIdeaBoardBody = {
+  notes: unknown[];
+  funItems: unknown[];
+  pinnedNoteIds: string[];
+  summaryPreview: string;
+  postedDecisionId: string | null;
 };

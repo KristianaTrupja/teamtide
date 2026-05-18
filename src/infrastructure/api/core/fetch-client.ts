@@ -59,6 +59,35 @@ export async function proxyPostJson<TResponse, TBody = unknown>(
   return res.json();
 }
 
+export async function proxyPutJson<TResponse, TBody = unknown>(
+  proxyPath: string,
+  body: TBody,
+  options?: { errorMessage?: string; init?: RequestInit },
+): Promise<TResponse> {
+  const extraInit = options?.init;
+  const mergedHeaders = new Headers();
+  mergedHeaders.set("Content-Type", "application/json");
+  if (extraInit?.headers) {
+    new Headers(extraInit.headers).forEach((value, key) => {
+      mergedHeaders.set(key, value);
+    });
+  }
+
+  const res = await proxyFetch(proxyPath, {
+    ...extraInit,
+    method: "PUT",
+    headers: mergedHeaders,
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const parsed = await getErrorMessageFromResponse(res);
+    throw new Error(
+      parsed || options?.errorMessage || `Request failed (${res.status})`,
+    );
+  }
+  return res.json();
+}
+
 export async function proxyDelete(
   proxyPath: string,
   options?: { errorMessage?: string; init?: RequestInit },

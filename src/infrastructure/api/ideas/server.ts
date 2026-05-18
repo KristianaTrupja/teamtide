@@ -1,7 +1,7 @@
 import "server-only";
 
 import { proxyGetJson } from "../core/fetch-server";
-import { ideasListPath } from "./paths";
+import { ideasDetailPath, ideasListPath } from "./paths";
 import type { IdeaResponseDto } from "./types";
 
 export type { IdeaResponseDto };
@@ -16,4 +16,16 @@ export async function getIdeas(
 
 export async function getRecentIdeas(): Promise<IdeaResponseDto[]> {
   return getIdeas();
+}
+
+export async function getIdeaById(
+  id: string,
+): Promise<IdeaResponseDto | null> {
+  try {
+    return await proxyGetJson<IdeaResponseDto>(ideasDetailPath(id), {
+      errorMessage: "Failed to fetch idea",
+    });
+  } catch {
+    return null;
+  }
 }
