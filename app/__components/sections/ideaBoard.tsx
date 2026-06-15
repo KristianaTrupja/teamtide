@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import FunDashboard from "@/app/__components/idea-board/funDashboard";
@@ -18,11 +19,9 @@ import type {
   SelectedCanvasItem,
 } from "@/app/__components/idea-board/types";
 import {
-  BOARD_TEMPLATES,
   FUN_ITEM_SIZE,
   NOTE_HEIGHT,
   NOTE_WIDTH,
-  getInitialFunItems,
 } from "@/app/__components/idea-board/constants";
 import {
   CANVAS_HEIGHT,
@@ -45,16 +44,11 @@ import { fetchCurrentUser } from "@/src/infrastructure/api/auth/client";
 import { saveIdeaBoard } from "@/src/infrastructure/api/ideas/client";
 
 export default function IdeaBoard({ idea }: IdeaBoardProps) {
+  const router = useRouter();
   const boardRef = useRef<HTMLDivElement>(null);
   const hasInitializedSaveRef = useRef(false);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [notes, setNotes] = useState<StickyNote[]>(() =>
-    idea.boardState?.notes ??
-      (BOARD_TEMPLATES[idea.slug] ?? []).map((note, index) => ({
-        ...note,
-        id: `${idea.slug}-${index}`,
-      })),
-  );
+  const [notes, setNotes] = useState<StickyNote[]>(() => idea.boardState?.notes ?? []);
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState("");
   const [editingFunTextId, setEditingFunTextId] = useState<string | null>(null);
@@ -98,7 +92,7 @@ export default function IdeaBoard({ idea }: IdeaBoardProps) {
   const [summaryPreview, setSummaryPreview] = useState(idea.boardState?.summaryPreview ?? "");
   const [postedDecisionId, setPostedDecisionId] = useState<string | null>(idea.boardState?.postedDecisionId ?? null);
   const [canvasScale, setCanvasScale] = useState(1);
-  const [funItems, setFunItems] = useState<FunItem[]>(() => idea.boardState?.funItems ?? getInitialFunItems(idea.slug));
+  const [funItems, setFunItems] = useState<FunItem[]>(() => idea.boardState?.funItems ?? []);
   const [selectedBoardTool, setSelectedBoardTool] = useState<SelectedBoardTool | null>(null);
   const [currentUserName, setCurrentUserName] = useState("Teammate");
 
@@ -306,17 +300,29 @@ export default function IdeaBoard({ idea }: IdeaBoardProps) {
     }
   }, [moveState, rotateState, selectedCanvasItem, selectedTextItemId, selectedShapeItemId]);
 
-  const generateSummaryPreview = () => {
+  const generateSummaryPreview = async () => {
     const pinnedNotes = notes.filter((note) => pinnedNoteIds.includes(note.id));
     const draft = createSummaryPreview(idea.title, pinnedNotes, notes);
-    setSummaryPreview(draft);
     const decision = publishAiSummaryToPlannedEvents({
       ideaSlug: idea.slug,
       ideaTitle: idea.title,
       summary: draft,
       pinnedNotes: pinnedNotes.map((note) => note.text),
     });
+    setSummaryPreview(draft);
     setPostedDecisionId(decision.id);
+    try {
+      await saveIdeaBoard(idea.id, {
+        notes,
+        funItems,
+        pinnedNoteIds,
+        summaryPreview: draft,
+        postedDecisionId: decision.id,
+      });
+    } catch {
+      // Keep UX moving forward even if persistence fails transiently.
+    }
+    router.push(`/planned-ideas?ideaId=${idea.id}`);
   };
 
   const deleteStickyNote = useCallback((noteId: string) => {
@@ -654,10 +660,10 @@ export default function IdeaBoard({ idea }: IdeaBoardProps) {
             {postedDecisionId ? (
               <div className="mt-3">
                 <Link
-                  href={`/planned-events#${postedDecisionId}`}
+                  href={`/planned-ideas?ideaId=${idea.id}`}
                   className="inline-flex rounded-full border border-emerald-300/40 bg-emerald-400/16 px-2.5 py-1 text-[11px] font-semibold text-emerald-100"
                 >
-                  Posted to Planned events
+                  Open in Planned ideas
                 </Link>
               </div>
             ) : null}
@@ -870,6 +876,7 @@ export default function IdeaBoard({ idea }: IdeaBoardProps) {
         notes={notes}
         summaryPreview={summaryPreview}
         postedDecisionId={postedDecisionId}
+        plannedIdeasHref={`/planned-ideas?ideaId=${idea.id}`}
         selectedTextItem={selectedTextItem}
         selectedShapeItem={selectedShapeItem}
         selectedTool={selectedBoardTool}

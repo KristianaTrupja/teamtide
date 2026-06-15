@@ -1,9 +1,15 @@
 import { proxyDelete, proxyGetJson, proxyPostJson, proxyPutJson } from "../core/fetch-client";
 import { getAccessToken } from "../../auth/session";
-import { ideasBoardPath, ideasCreatePath, ideasDetailPath, ideasListPath } from "./paths";
-import type { CreateIdeaBody, IdeaResponseDto, SaveIdeaBoardBody } from "./types";
+import { ideaCommentsPath, ideasBoardPath, ideasCreatePath, ideasDetailPath, ideasListPath } from "./paths";
+import type {
+  CreateIdeaBody,
+  CreateIdeaCommentBody,
+  IdeaCommentDto,
+  IdeaResponseDto,
+  SaveIdeaBoardBody,
+} from "./types";
 
-export type { CreateIdeaBody, IdeaResponseDto };
+export type { CreateIdeaBody, IdeaCommentDto, IdeaResponseDto };
 
 export async function getIdeas(
   status?: string,
@@ -30,6 +36,12 @@ export async function createIdea(
   );
 }
 
+export async function getIdeaById(id: string): Promise<IdeaResponseDto> {
+  return proxyGetJson<IdeaResponseDto>(ideasDetailPath(id), {
+    errorMessage: "Failed to fetch idea",
+  });
+}
+
 export async function deleteIdea(id: string): Promise<void> {
   const token = getAccessToken();
   if (!token) {
@@ -54,6 +66,30 @@ export async function saveIdeaBoard(
     body,
     {
       errorMessage: "Could not save idea board",
+      init: { headers: { Authorization: `Bearer ${token}` } },
+    },
+  );
+}
+
+export async function getIdeaComments(id: string): Promise<IdeaCommentDto[]> {
+  return proxyGetJson<IdeaCommentDto[]>(ideaCommentsPath(id), {
+    errorMessage: "Failed to fetch comments",
+  });
+}
+
+export async function createIdeaComment(
+  id: string,
+  body: CreateIdeaCommentBody,
+): Promise<IdeaCommentDto> {
+  const token = getAccessToken();
+  if (!token) {
+    throw new Error("Not authenticated");
+  }
+  return proxyPostJson<IdeaCommentDto, CreateIdeaCommentBody>(
+    ideaCommentsPath(id),
+    body,
+    {
+      errorMessage: "Could not post comment",
       init: { headers: { Authorization: `Bearer ${token}` } },
     },
   );

@@ -12,6 +12,7 @@ export type IdeaResponseDto = {
   coverImageUrl?: string | null;
   status: string;
   createdAt: string;
+  updatedAt?: string;
   createdBy: {
     id: string;
     username: string;
@@ -36,6 +37,7 @@ export type IdeaResponseDto = {
       isPinned: boolean;
     }[];
   } | null;
+  comments?: IdeaCommentDto[];
 };
 
 export type SaveIdeaBoardBody = {
@@ -44,4 +46,21 @@ export type SaveIdeaBoardBody = {
   pinnedNoteIds: string[];
   summaryPreview: string;
   postedDecisionId: string | null;
+};
+
+export type CreateIdeaCommentBody = {
+  content: string;
+};
+
+export type IdeaCommentDto = {
+  id: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  author: {
+    id: string;
+    username: string;
+    fullName?: string | null;
+    avatarUrl?: string | null;
+  };
 };

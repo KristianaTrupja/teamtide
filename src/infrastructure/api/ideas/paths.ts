@@ -15,3 +15,7 @@ export function ideasDetailPath(id: string): string {
 export function ideasBoardPath(id: string): string {
   return buildProxyPath(["ideas", id, "board"]);
 }
+
+export function ideaCommentsPath(id: string): string {
+  return buildProxyPath(["ideas", id, "comments"]);
+}

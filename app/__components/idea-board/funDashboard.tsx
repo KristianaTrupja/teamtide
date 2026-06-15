@@ -18,6 +18,7 @@ export default function FunDashboard({
   notes,
   summaryPreview,
   postedDecisionId,
+  plannedIdeasHref,
   selectedTextItem,
   selectedShapeItem,
   selectedTool,
@@ -312,12 +313,12 @@ export default function FunDashboard({
         ) : null}
         {postedDecisionId ? (
           <div className="tf-board-posted-box mt-2">
-            <p>Posted to Planned events decisions.</p>
+            <p>Posted to planned ideas.</p>
             <Link
-              href={`/planned-events#${postedDecisionId}`}
+              href={plannedIdeasHref}
               className="tf-board-posted-link mt-1 inline-flex text-[11px] font-semibold underline underline-offset-2"
             >
-              Open Planned events
+              Open Planned ideas
             </Link>
           </div>
         ) : null}

@@ -1,4 +1,4 @@
-import type { FunItem, IdeaReaction, StickyNote } from "@/src/entities/models/idea-board";
+import type { IdeaReaction, StickyNote } from "@/src/entities/models/idea-board";
 
 export const NOTE_WIDTH = 180;
 export const NOTE_HEIGHT = 130;
@@ -91,44 +91,3 @@ export const CATEGORY_COLORS: Record<StickyNote["category"], string> = {
   general: "#d1c4e9",
 };
 
-export const BOARD_TEMPLATES: Record<string, Omit<StickyNote, "id">[]> = {
-  "christmas-party": [
-    {
-      author: "Nora",
-      text: "Venue option: rooftop at Downtown Hotel (easy parking).",
-      category: "location",
-      x: 32,
-      y: 36,
-      width: NOTE_WIDTH,
-      height: NOTE_HEIGHT,
-      color: "#ffe082",
-    },
-    {
-      author: "Mateo",
-      text: "For food allergy info, we should ask everyone in one shared form first.",
-      category: "allergies",
-      x: 260,
-      y: 64,
-      width: NOTE_WIDTH,
-      height: NOTE_HEIGHT,
-      color: "#f8bbd0",
-    },
-    {
-      author: "Asha",
-      text: "Music idea: warm-up playlist first hour, then party mix.",
-      category: "music",
-      x: 470,
-      y: 42,
-      width: NOTE_WIDTH,
-      height: NOTE_HEIGHT,
-      color: "#b3e5fc",
-    },
-  ],
-};
-
-export function getInitialFunItems(slug: string): FunItem[] {
-  return [
-    { id: `${slug}-fun-1`, kind: "emoji", value: EMOJI_TOOLS[0].id, x: 58, y: 250, width: FUN_ITEM_SIZE, height: FUN_ITEM_SIZE },
-    { id: `${slug}-fun-2`, kind: "emoji", value: EMOJI_TOOLS[1].id, x: 142, y: 286, width: FUN_ITEM_SIZE, height: FUN_ITEM_SIZE },
-  ];
-}

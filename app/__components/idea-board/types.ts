@@ -38,12 +38,13 @@ export type FunDashboardProps = {
   notes: StickyNote[];
   summaryPreview: string;
   postedDecisionId: string | null;
+  plannedIdeasHref: string;
   selectedTextItem: FunItem | null;
   selectedShapeItem: FunItem | null;
   selectedTool: SelectedBoardTool | null;
   onToggleAdmin: (checked: boolean) => void;
   onTogglePinMode: () => void;
-  onGenerateSummary: () => void;
+  onGenerateSummary: () => void | Promise<void>;
   onSelectTool: (toolKind: FunItem["kind"], value: string) => void;
   onChangeTextStyle: (patch: Partial<TextItemStyle>) => void;
   onChangeShapeStyle: (patch: Partial<ShapeItemStyle>) => void;

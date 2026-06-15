@@ -141,7 +141,7 @@ export default function DiscoverIdeasPage() {
   return (
     <>
       <HeroSlider slides={heroSlides} height="small" />
-      <main className="min-h-screen bg-black px-4 py-20 text-white">
+      <section className="min-h-screen bg-black px-4 py-20 text-white">
         <div className="mx-auto max-w-7xl">
           {!hydrated && (
             <p className="text-center text-white/60">Loading ideas…</p>
@@ -247,7 +247,7 @@ export default function DiscoverIdeasPage() {
             </div>
           )}
         </div>
-      </main>
+      </section>
     </>
   );
 }

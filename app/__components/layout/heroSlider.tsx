@@ -29,7 +29,7 @@ export default function HeroSlider({
   autoPlay = true,
   interval = 5000,
   className,
-  height = "full",
+  height = "medium",
 }: HeroSliderProps) {
   const [activeSlide, setActiveSlide] = useState(0);
 

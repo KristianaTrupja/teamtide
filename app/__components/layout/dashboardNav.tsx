@@ -6,7 +6,7 @@ import { cn } from "../ui/utils";
 const navLinks = [
   { label: "Create Idea", href: "/dashboard/create" },
   { label: "Discover Ideas", href: "/discover-ideas" },
-  { label: "Planned Ideas", href: "/dashboard/planned" },
+  { label: "Planned Ideas", href: "/planned-ideas" },
 ];
 
 export function DashboardNav({ className }: { className?: string }) {
